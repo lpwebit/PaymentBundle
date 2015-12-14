@@ -1,0 +1,4 @@
+lp_web_payment:
+    paypal:
+      mode: sandbox
+      logLevel: DEBUG

@@ -1,0 +1,27 @@
+{
+  "name": "lpwebit/payment-bundle",
+  "type": "symfony-bundle",
+  "description": "A Symfony2 Bundle for making payment",
+  "keywords": ["symfony2", "payment", "paypal"],
+  "homepage": "https://github.com/lpwebit/PaymentBundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lorenzo Pezzali",
+      "email": "lorenzo.pezzali@lpweb.it",
+      "homepage": "http://www.lpweb.it/"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.3",
+    "symfony/framework-bundle": "~2.3",
+    "twig/twig": "~1.12",
+    "paypal/rest-api-sdk-php": "*"
+  },
+  "autoload": {
+    "psr-0": {
+      "LpWeb\\PaymentBundle": ""
+    }
+  },
+  "target-dir": "LpWeb/PaymentBundle"
+}

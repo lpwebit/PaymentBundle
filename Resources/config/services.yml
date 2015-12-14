@@ -1,0 +1,4 @@
+services:
+    lpweb_payment.paypal.express_checkout:
+        class: LpWeb\PaymentBundle\Util\PayPal\PayPalExpressCheckoutService
+        arguments: ["@service_container"]
