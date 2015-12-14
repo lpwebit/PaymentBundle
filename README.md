@@ -122,7 +122,7 @@ $expressCheckout = $this->get('lpweb_payment.paypal.express_checkout');
 $expressCheckout->setInvoiceNumber(uniqid());
 
 // Set the transaction description
-$expressCheckout->setDescription("NearToAll - Quota Associativa");
+$expressCheckout->setDescription("Transaction Description");
 
 // Set the total amount of the order
 $expressCheckout->setAmout(10.00);
