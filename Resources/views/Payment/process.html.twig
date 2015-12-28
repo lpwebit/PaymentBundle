@@ -1,0 +1,10 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <form action="{{ data.serverUrl }}">
+        {% for key,value in data.data %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}"/>
+        {% endfor %}
+        <input type="submit" class="btn btn-primary" value="Vai a PayPal">
+    </form>
+{% endblock %}

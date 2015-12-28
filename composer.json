@@ -18,6 +18,10 @@
     "twig/twig": "~1.12",
     "paypal/rest-api-sdk-php": "*"
   },
+  "require-dev": {
+    "symfony/symfony": "2.7.*",
+    "doctrine/orm": "^2.4.8"
+  },
   "autoload": {
     "psr-0": {
       "LpWeb\\PaymentBundle": ""
