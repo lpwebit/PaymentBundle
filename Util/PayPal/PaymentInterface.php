@@ -73,7 +73,6 @@ abstract class PaymentInterface extends ContainerAware {
 	 */
 	public function setInvoiceNumber($invoiceNumber) {
 		$this->invoiceNumber = $invoiceNumber;
-		$this->setUniqueId(md5($invoiceNumber.time()));
 	}
 
 	/**
@@ -170,6 +169,10 @@ abstract class PaymentInterface extends ContainerAware {
 	public function setUniqueId($uniqueId) {
 		$this->uniqueId = $uniqueId;
 		return $this;
+	}
+
+	public function generateUniqueId() {
+		$this->setUniqueId(md5(uniqid(time())));
 	}
 
 	private function getAbsoluteUrl($routeName, $paymentMethod, $params = []) {
