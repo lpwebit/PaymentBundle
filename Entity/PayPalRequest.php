@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * PayPalRequest
  *
- * @ORM\Table(indexes={uniqueConstraints={@ORM\UniqueConstraint(name="uniqueid_idx", columns={"unique_id"})})
+ * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="uniqueid_idx", columns={"unique_id"})})
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
