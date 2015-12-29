@@ -12,5 +12,8 @@
         <input type="submit" class="btn btn-primary" value="{{ 'payment.paypal.process.submit_button'|trans() }}">
     </form>
 
+{% endblock %}
+
+{% block javascripts %}
     <script src="{{ asset('bundles/lpwebpayment/js/process_paypal.js') }}"></script>
 {% endblock %}
