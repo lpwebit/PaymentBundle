@@ -1,10 +1,16 @@
 {% extends '::base.html.twig' %}
 
 {% block body %}
-    <form action="{{ data.serverUrl }}">
+    <h1>{{ 'payment.paypal.process.title'|trans() }}</h1>
+
+    <p>{{ 'payment.paypal.process.description'|trans() }}</p>
+
+    <form id="form_paypal_wps" action="{{ data.serverUrl }}">
         {% for key,value in data.data %}
             <input type="hidden" name="{{ key }}" value="{{ value }}"/>
         {% endfor %}
-        <input type="submit" class="btn btn-primary" value="Vai a PayPal">
+        <input type="submit" class="btn btn-primary" value="{{ 'payment.paypal.process.submit_button'|trans() }}">
     </form>
+
+    <script src="{{ asset('bundles/lpwebpayment/js/process_paypal.js') }}"></script>
 {% endblock %}

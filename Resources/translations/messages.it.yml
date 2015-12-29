@@ -1,0 +1,6 @@
+payment:
+  paypal:
+    process:
+      title: Pagamento
+      description: Per favore attendi mentre vieni reindirizzato al server di pagamento. Se non accade nulla entro 10 secondi, clicca sul pulsante qui sotto.
+      submit_button: Procedi a PayPal

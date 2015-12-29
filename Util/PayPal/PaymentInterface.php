@@ -6,6 +6,7 @@ namespace LpWeb\PaymentBundle\Util\PayPal;
 use PayPal\Api\Amount;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -44,14 +45,12 @@ abstract class PaymentInterface extends ContainerAware {
 	// Transactional field
 	/** @var string|null */
 	private $invoiceNumber;
-	/** @var string|null */
-	private $cancelUrl;
-	/** @var string|null */
-	private $successUrl;
 	/** @var Amount */
 	private $amount;
 	/** @var string */
 	private $description;
+	/** @var string */
+	private $redirectUrl;
 
 	/**
 	 * @return null|string
@@ -77,35 +76,15 @@ abstract class PaymentInterface extends ContainerAware {
 	/**
 	 * @return null|string
 	 */
-	public function getCancelUrl($paymentMethod) {
-		if(!empty($this->cancelUrl)) {
-			return $this->cancelUrl;
-		}
-		return $this->getAbsoluteUrl('payment_cancel', $paymentMethod);
-	}
-
-	/**
-	 * @param null|string $cancelUrl
-	 */
-	public function setCancelUrl($cancelUrl) {
-		$this->cancelUrl = $cancelUrl;
+	public function getSuccessUrl($paymentMethod) {
+		return $this->getAbsoluteUrl('payment_success', $paymentMethod, ['redirectUrl' => $this->getRedirectUrl()]);
 	}
 
 	/**
 	 * @return null|string
 	 */
-	public function getSuccessUrl($paymentMethod) {
-		if(!empty($this->successUrl)) {
-			return $this->successUrl;
-		}
-		return $this->getAbsoluteUrl('payment_success', $paymentMethod);
-	}
-
-	/**
-	 * @param null|string $successUrl
-	 */
-	public function setSuccessUrl($successUrl) {
-		$this->successUrl = $successUrl;
+	public function getCancelUrl($paymentMethod) {
+		return $this->getAbsoluteUrl('payment_cancel', $paymentMethod);
 	}
 
 	/**
@@ -160,8 +139,23 @@ abstract class PaymentInterface extends ContainerAware {
 		$this->description = $description;
 	}
 
-	private function getAbsoluteUrl($routeName, $paymentMethod) {
-		return $this->container->get('router')->generate($routeName, ['paymentMethod' => $paymentMethod], UrlGeneratorInterface::ABSOLUTE_URL);
+	/**
+	 * @return string
+	 */
+	public function getRedirectUrl() {
+		return $this->redirectUrl;
+	}
+
+	/**
+	 * @param string $redirectUrl
+	 */
+	public function setRedirectUrl($redirectUrl) {
+		$this->redirectUrl = $redirectUrl;
+	}
+
+	private function getAbsoluteUrl($routeName, $paymentMethod, $params = []) {
+		$params += ['paymentMethod' => $paymentMethod];
+		return $this->container->get('router')->generate($routeName, $params, UrlGeneratorInterface::ABSOLUTE_URL);
 	}
 
 	protected function getLogFilePath() {
@@ -190,5 +184,11 @@ abstract class PaymentInterface extends ContainerAware {
 				return '';
 		}
 	}
+
+	public abstract function notify(Request $request);
+
+	public abstract function success(Request $request);
+
+	public abstract function cancel();
 
 }

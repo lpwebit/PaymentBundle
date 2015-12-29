@@ -149,4 +149,7 @@ class PayPalExpressCheckout extends PaymentInterface {
 		return $apiContext;
 	}
 
+	public function notify() {
+		// TODO: Implement notify() method.
+	}
 }

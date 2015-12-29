@@ -109,28 +109,22 @@ Usage
 Basics
 ------
 
-To make a request for payment you simply have to set a few information,
+To make a request for payment with WPS you simply have to set a few information,
 and then redirect the user to the generated approval url:
 
 ```php
 <?php
 ...
-// Get the Paypal Express Checkout Service
-$expressCheckout = $this->get('lpweb_payment.paypal.express_checkout');
+/** @var PayPalWPS $wpsService */
+$wpsService = $this->get('lpweb_payment.paypal.wps');
+$wpsService->setAmout(10.0);
+$wpsService->setDescription('Transaction Description');
+$wpsService->setInvoiceNumber(1);
+// set the redirect url to which the user has to be redirected after successfull completion
+$wpsService->setRedirectUrl($this->generateUrl('route_name'));
+$data = $wpsService->getData();
 
-// Set the Invoice Number or OrderId
-$expressCheckout->setInvoiceNumber(uniqid());
-
-// Set the transaction description
-$expressCheckout->setDescription("Transaction Description");
-
-// Set the total amount of the order
-$expressCheckout->setAmout(10.00);
-
-// Get the redirect url for payment approval
-$approvalUrl = $expressCheckout->createPayment();
-
-// Now you have to redirect the user to the paypal confirmation page
+return $this->render('LpWebPaymentBundle:Payment:process.html.twig', ['data' => $data]);
 ```
 
 

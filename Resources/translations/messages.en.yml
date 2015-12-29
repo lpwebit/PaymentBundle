@@ -1,0 +1,6 @@
+payment:
+  paypal:
+    process:
+      title: Payment
+      description: Please wait while you are redirected to the payment server. If nothing happens within 10 seconds, please click on the button below.
+      submit_button: Proceed to PayPal

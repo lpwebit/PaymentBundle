@@ -2,13 +2,12 @@
 
 namespace LpWeb\PaymentBundle\Controller;
 
-use LpWeb\PaymentBundle\Entity\PayPalIpnLog;
-use PayPal\Api\PaymentExecution;
+use LpWeb\PaymentBundle\Util\PayPal\PaymentInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use PayPal\Api\Payment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/payment")
@@ -20,15 +19,7 @@ class PaymentController extends Controller {
 	 * @Template()
 	 */
 	public function processAction() {
-		$wpsService = $this->get('lpweb_payment.paypal.wps');
-		$wpsService->setAmout(10.0);
-		$wpsService->setDescription('NearToAll Registrazione');
-		$wpsService->setInvoiceNumber(6);
-		$data = $wpsService->process();
-
-		return [
-			'data' => $data
-		];
+		return [];
 	}
 
 	/**
@@ -36,15 +27,10 @@ class PaymentController extends Controller {
 	 * @Template()
 	 */
 	public function successAction(Request $request, $paymentMethod) {
-		dump($_POST); die;
+		/** @var PaymentInterface $paymentService */
 		$paymentService = $this->getPaymentService($paymentMethod);
-//		$paymentId = $request->get('paymentId');
-//		$payment = Payment::get($paymentId, $apiContext);
-//
-//		$execution = new PaymentExecution();
-//		$execution->setPayerId($request->get('PayerID'));
 
-		return [];
+		return $this->redirect($paymentService->success($request));
 	}
 
 	/**
@@ -52,7 +38,10 @@ class PaymentController extends Controller {
 	 * @Template()
 	 */
 	public function cancelAction(Request $request, $paymentMethod) {
+		/** @var PaymentInterface $paymentService */
 		$paymentService = $this->getPaymentService($paymentMethod);
+		$paymentService->cancel();
+
 		return [];
 	}
 
@@ -60,22 +49,17 @@ class PaymentController extends Controller {
 	 * @Route("/notify/{paymentMethod}", name="payment_notify")
 	 */
 	public function notifyAction(Request $request, $paymentMethod) {
+		/** @var PaymentInterface $paymentService */
 		$paymentService = $this->getPaymentService($paymentMethod);
-		$ipnLog = new PayPalIpnLog();
-		$ipnLog->setRequest(serialize($_POST));
-		$em = $this->getDoctrine()->getManager();
-		$em->persist($ipnLog);
-		$em->flush();
-		return [];
+		$paymentService->notify($request);
+
+		return new Response();
 	}
 
 	/**
 	 * @Route("/view-notify/", name="view_payment_notify")
 	 */
-	public function viewNotifyAction(Request $request, $paymentMethod) {
-		$em = $this->getDoctrine()->getManager();
-		$result = $em->getRepository('LpWebPaymentBundle:PayPalIpnLog')->findAll();
-		dump($result[0]); die;
+	public function viewNotifyAction(Request $request) {
 		return [];
 	}
 
