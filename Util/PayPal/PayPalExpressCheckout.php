@@ -19,6 +19,7 @@ use PayPal\Api\Transaction;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Rest\ApiContext;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class PayPalExpressCheckout
@@ -149,7 +150,15 @@ class PayPalExpressCheckout extends PaymentInterface {
 		return $apiContext;
 	}
 
-	public function notify() {
+	public function notify(Request $request, $uniqueId) {
 		// TODO: Implement notify() method.
+	}
+
+	public function success(Request $request, $uniqueId) {
+		// TODO: Implement success() method.
+	}
+
+	public function cancel($uniqueId) {
+		// TODO: Implement cancel() method.
 	}
 }

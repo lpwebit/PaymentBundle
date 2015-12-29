@@ -28,6 +28,12 @@ class PayPalIpnLog {
 	 *
 	 * @ORM\Column(type="text")
 	 */
+	private $uniqueId;
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="text")
+	 */
 	private $mc_gross;
 	/**
 	 * @var string
@@ -887,6 +893,20 @@ class PayPalIpnLog {
 	public function setAuth($auth) {
 		$this->auth = $auth;
 		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUniqueId() {
+		return $this->uniqueId;
+	}
+
+	/**
+	 * @param string $uniqueId
+	 */
+	public function setUniqueId($uniqueId) {
+		$this->uniqueId = $uniqueId;
 	}
 
 }

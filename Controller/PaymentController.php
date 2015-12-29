@@ -23,35 +23,35 @@ class PaymentController extends Controller {
 	}
 
 	/**
-	 * @Route("/success/{paymentMethod}", name="payment_success")
+	 * @Route("/success/{uniqueId}/{paymentMethod}", name="payment_success")
 	 * @Template()
 	 */
-	public function successAction(Request $request, $paymentMethod) {
+	public function successAction(Request $request, $paymentMethod, $uniqueId) {
 		/** @var PaymentInterface $paymentService */
 		$paymentService = $this->getPaymentService($paymentMethod);
 
-		return $this->redirect($paymentService->success($request));
+		return $this->redirect($paymentService->success($request, $uniqueId));
 	}
 
 	/**
-	 * @Route("/cancel/{paymentMethod}", name="payment_cancel")
+	 * @Route("/cancel/{uniqueId}/{paymentMethod}", name="payment_cancel")
 	 * @Template()
 	 */
-	public function cancelAction(Request $request, $paymentMethod) {
+	public function cancelAction(Request $request, $paymentMethod, $uniqueId) {
 		/** @var PaymentInterface $paymentService */
 		$paymentService = $this->getPaymentService($paymentMethod);
-		$paymentService->cancel();
+		$paymentService->cancel($uniqueId);
 
 		return [];
 	}
 
 	/**
-	 * @Route("/notify/{paymentMethod}", name="payment_notify")
+	 * @Route("/notify/{uniqueId}/{paymentMethod}", name="payment_notify")
 	 */
-	public function notifyAction(Request $request, $paymentMethod) {
+	public function notifyAction(Request $request, $paymentMethod, $uniqueId) {
 		/** @var PaymentInterface $paymentService */
 		$paymentService = $this->getPaymentService($paymentMethod);
-		$paymentService->notify($request);
+		$paymentService->notify($request, $uniqueId);
 
 		return new Response();
 	}

@@ -43,6 +43,8 @@ abstract class PaymentInterface extends ContainerAware {
 	}
 
 	// Transactional field
+	/** @var string */
+	private $uniqueId;
 	/** @var string|null */
 	private $invoiceNumber;
 	/** @var Amount */
@@ -71,27 +73,28 @@ abstract class PaymentInterface extends ContainerAware {
 	 */
 	public function setInvoiceNumber($invoiceNumber) {
 		$this->invoiceNumber = $invoiceNumber;
+		$this->setUniqueId(md5($invoiceNumber.time()));
 	}
 
 	/**
 	 * @return null|string
 	 */
 	public function getSuccessUrl($paymentMethod) {
-		return $this->getAbsoluteUrl('payment_success', $paymentMethod, ['redirectUrl' => $this->getRedirectUrl()]);
+		return $this->getAbsoluteUrl('payment_success', $paymentMethod, ['uniqueId' => $this->getUniqueId(), 'redirectUrl' => $this->getRedirectUrl()]);
 	}
 
 	/**
 	 * @return null|string
 	 */
 	public function getCancelUrl($paymentMethod) {
-		return $this->getAbsoluteUrl('payment_cancel', $paymentMethod);
+		return $this->getAbsoluteUrl('payment_cancel', $paymentMethod, ['uniqueId' => $this->getUniqueId()]);
 	}
 
 	/**
 	 * @return null|string
 	 */
 	public function getNotifyUrl($paymentMethod) {
-		return $this->getAbsoluteUrl('payment_notify', $paymentMethod);
+		return $this->getAbsoluteUrl('payment_notify', $paymentMethod, ['uniqueId' => $this->getUniqueId()]);
 	}
 
 	/**
@@ -153,6 +156,22 @@ abstract class PaymentInterface extends ContainerAware {
 		$this->redirectUrl = $redirectUrl;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getUniqueId() {
+		return $this->uniqueId;
+	}
+
+	/**
+	 * @param string $uniqueId
+	 * @return PaymentInterface
+	 */
+	public function setUniqueId($uniqueId) {
+		$this->uniqueId = $uniqueId;
+		return $this;
+	}
+
 	private function getAbsoluteUrl($routeName, $paymentMethod, $params = []) {
 		$params += ['paymentMethod' => $paymentMethod];
 		return $this->container->get('router')->generate($routeName, $params, UrlGeneratorInterface::ABSOLUTE_URL);
@@ -185,10 +204,10 @@ abstract class PaymentInterface extends ContainerAware {
 		}
 	}
 
-	public abstract function notify(Request $request);
+	public abstract function notify(Request $request, $uniqueId);
 
-	public abstract function success(Request $request);
+	public abstract function success(Request $request, $uniqueId);
 
-	public abstract function cancel();
+	public abstract function cancel($uniqueId);
 
 }

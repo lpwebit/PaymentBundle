@@ -10,6 +10,7 @@ namespace LpWeb\PaymentBundle\Util\PayPal;
 
 
 use LpWeb\PaymentBundle\Entity\PayPalIpnLog;
+use LpWeb\PaymentBundle\Entity\PayPalRequest;
 use LpWeb\PaymentBundle\Event\PayPalNotifyEvent;
 use LpWeb\PaymentBundle\LpWebPaymentEvents;
 use Symfony\Component\DependencyInjection\Container;
@@ -29,7 +30,8 @@ class PayPalWPS extends PaymentInterface {
 		$this->businessMail = $parameters['paypal']['business_mail'];
 	}
 
-	public function getData() {
+
+	public function getData($customData = []) {
 		$this->validateData();
 
 		// Specify the checkout experience to present to the user.
@@ -85,15 +87,42 @@ class PayPalWPS extends PaymentInterface {
 //		$data['on0_1'] = 'Product count';
 //		$data['os0_1'] = '2';
 
+		$paypalRequest = new PayPalRequest();
+		$paypalRequest->setUniqueId($this->getUniqueId());
+		$paypalRequest->setCmd($data['cmd']);
+		$paypalRequest->setUpload($data['upload']);
+		$paypalRequest->setBusiness($data['business']);
+		$paypalRequest->setBn($data['bn']);
+		$paypalRequest->setCharset($data['charset']);
+		$paypalRequest->setNoNote($data['no_note']);
+		$paypalRequest->setNoShipping($data['no_shipping']);
+		$paypalRequest->setCancelReturn($data['cancel_return']);
+		$paypalRequest->setReturn($data['return']);
+		$paypalRequest->setNotifyUrl($data['notify_url']);
+		$paypalRequest->setRm($data['rm']);
+		$paypalRequest->setPaymentaction($data['paymentaction']);
+		$paypalRequest->setCurrencyCode($data['currency_code']);
+		$paypalRequest->setLc($data['lc']);
+		$paypalRequest->setInvoice($data['invoice']);
+		$paypalRequest->setAmount1($data['amount_1']);
+		$paypalRequest->setItemName1($data['item_name_1']);
+		$paypalRequest->setCustomData(serialize($customData));
+
+		$em = $this->container->get('doctrine')->getManager();
+		$em->persist($paypalRequest);
+		$em->flush();
+
 		return [
+			'uniqueId' => $this->getUniqueId(),
 			'serverUrl' => $this->getServerUrl(),
 			'data' => $data
 		];
 	}
 
-	public function notify(Request $request) {
+	public function notify(Request $request, $uniqueId) {
 		$ipnLog = new PayPalIpnLog();
 
+		$ipnLog->setUniqueId($uniqueId);
 		$ipnLog->setMcGross($request->get('mc_gross'));
 		$ipnLog->setInvoice($request->get('invoice'));
 		$ipnLog->setProtectionEligibility($request->get('protection_eligibility'));
@@ -144,11 +173,11 @@ class PayPalWPS extends PaymentInterface {
 		$dispatcher->dispatch(LpWebPaymentEvents::NOTIFY_PAYPAL_PAYMENT_IPN, new PayPalNotifyEvent($ipnLog));
 	}
 
-	public function cancel() {
+	public function cancel($uniqueId) {
 		// TODO: Implement cancel() method.
 	}
 
-	public function success(Request $request) {
+	public function success(Request $request, $uniqueId) {
 		return $request->get('redirectUrl');
 	}
 }

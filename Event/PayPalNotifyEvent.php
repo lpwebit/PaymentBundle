@@ -7,6 +7,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 class PayPalNotifyEvent extends Event {
 
+	/** @var PayPalIpnLog */
 	private $ipnLog;
 
 	/**
@@ -16,16 +17,16 @@ class PayPalNotifyEvent extends Event {
 	public function __construct(PayPalIpnLog $ipnLog) { $this->ipnLog = $ipnLog; }
 
 	/**
-	 * @return mixed
+	 * @return PayPalIpnLog
 	 */
 	public function getIpnLog() {
 		return $this->ipnLog;
 	}
 
 	/**
-	 * @param mixed $ipnLog
+	 * @param PayPalIpnLog $ipnLog
 	 */
-	public function setIpnLog($ipnLog) {
+	public function setIpnLog(PayPalIpnLog $ipnLog) {
 		$this->ipnLog = $ipnLog;
 	}
 
