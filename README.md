@@ -103,6 +103,10 @@ Complete configuration:
             mode: sandbox|live
             logLevel: DEBUG|INFO|WARN|ERROR
 
+Export all assetic
+    
+    php app/console assets:install
+
 Usage
 =====
 
