@@ -24,6 +24,8 @@ abstract class PaymentInterface extends ContainerAware {
 
 		$this->mode = $parameters['paypal']['mode'];
 		$this->logLevel = $parameters['paypal']['logLevel'];
+
+		$this->generateUniqueId();
 	}
 
 	// Configuration field
