@@ -32,235 +32,235 @@ class PayPalIpnLog {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $mc_gross;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $invoice;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $protection_eligibility;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $item_number1;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $payer_id;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $tax;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $payment_date;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $payment_status;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $charset;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $mc_shipping;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $mc_handling;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $first_name;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $mc_fee;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $notify_version;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $custom;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $payer_status;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $business;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $num_cart_items;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $mc_handling1;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $payer_email;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $verify_sign;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $mc_shipping1;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $tax1;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $txn_id;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $payment_type;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $last_name;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $item_name1;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $receiver_email;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $payment_fee;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $quantity1;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $receiver_id;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $txn_type;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $mc_gross_1;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $mc_currency;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $residence_country;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $test_ipn;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $transaction_subject;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $payment_gross;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $auth;
 
