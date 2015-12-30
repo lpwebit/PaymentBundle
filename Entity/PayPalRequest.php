@@ -145,6 +145,17 @@ class PayPalRequest {
 	private $customData;
 
 	/**
+	 * @var \DateTime
+	 *
+	 * @ORM\Column(name="added", type="datetimetz")
+	 */
+	private $added;
+
+	function __construct() {
+		$this->added = new \DateTime();
+	}
+
+	/**
 	 * @return int
 	 */
 	public function getId() {
@@ -452,6 +463,22 @@ class PayPalRequest {
 	 */
 	public function setCustomData($customData) {
 		$this->customData = $customData;
+		return $this;
+	}
+
+	/**
+	 * @return \DateTime
+	 */
+	public function getAdded() {
+		return $this->added;
+	}
+
+	/**
+	 * @param \DateTime $added
+	 * @return PayPalRequest
+	 */
+	public function setAdded($added) {
+		$this->added = $added;
 		return $this;
 	}
 

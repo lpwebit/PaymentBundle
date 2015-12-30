@@ -265,6 +265,17 @@ class PayPalIpnLog {
 	private $auth;
 
 	/**
+	 * @var \DateTime
+	 *
+	 * @ORM\Column(name="added", type="datetimetz")
+	 */
+	private $added;
+
+	function __construct() {
+		$this->added = new \DateTime();
+	}
+
+	/**
 	 * @return int
 	 */
 	public function getId() {
@@ -907,6 +918,22 @@ class PayPalIpnLog {
 	 */
 	public function setUniqueId($uniqueId) {
 		$this->uniqueId = $uniqueId;
+	}
+
+	/**
+	 * @return \DateTime
+	 */
+	public function getAdded() {
+		return $this->added;
+	}
+
+	/**
+	 * @param \DateTime $added
+	 * @return PayPalIpnLog
+	 */
+	public function setAdded($added) {
+		$this->added = $added;
+		return $this;
 	}
 
 }
