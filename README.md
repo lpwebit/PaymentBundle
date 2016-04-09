@@ -103,6 +103,15 @@ Complete configuration:
             mode: sandbox|live
             logLevel: DEBUG|INFO|WARN|ERROR
 
+### Step 5: add routing
+
+Add this to your `app/config/routing.yml`:
+
+    lp_web_payment:
+        resource: "@LpWebPaymentBundle/Controller/"
+        type:     annotation
+        prefix:   /
+        
 Export all assetic
     
     php app/console assets:install
