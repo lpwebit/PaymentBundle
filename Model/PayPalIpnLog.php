@@ -1,6 +1,6 @@
 <?php
 
-namespace LpWeb\PaymentBundle\Entity;
+namespace LpWeb\PaymentBundle\Model;
 
 
 use Doctrine\ORM\Mapping as ORM;

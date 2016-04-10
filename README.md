@@ -3,6 +3,9 @@ LpWeb's PaymentBundle
 
 `LpWebPaymentBundle` provides easy integration with payments gateway for Symfony2 and Twig
 
+[![Latest Stable Version](https://poser.pugx.org/lpwebit/payment-bundle/v/stable)](https://packagist.org/packages/lpwebit/payment-bundle)
+[![Total Downloads](https://poser.pugx.org/lpwebit/payment-bundle/downloads)](https://packagist.org/packages/lpwebit/payment-bundle)
+
 Installation
 ============
 
@@ -136,6 +139,16 @@ Requirements
 ============
 
 `LpWebPaymentBundle` no further requirements are needed
+
+Support
+============
+
+If you want to keep up to date with release anouncements, discuss ideas for the project,
+or ask more detailed questions, there is also a [mailing list](https://groups.google.com/forum/#!forum/lpwebitpaymentbundle) which
+you can subscribe to.
+
+If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/lpwebit/PaymentBundle/issues),
+or better yet, fork the library and submit a pull request.
 
 License
 =======

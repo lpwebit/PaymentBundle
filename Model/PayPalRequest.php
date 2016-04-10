@@ -6,7 +6,7 @@
  * Time: 16:19
  */
 
-namespace LpWeb\PaymentBundle\Entity;
+namespace LpWeb\PaymentBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 
