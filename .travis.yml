@@ -7,7 +7,35 @@ php:
   - 5.6
   - hhvm
 
-before_script:
-  - composer install -n --dev --prefer-source
+matrix:
+  fast_finish: true
+  include:
+    - php: 5.3
+      env: COMPOSER_FLAGS="--prefer-lowest"
+    - php: 5.6
+      env: SYMFONY_VERSION=2.3.*
+    - php: 5.6
+      env: SYMFONY_VERSION=2.7.*
+    - php: 5.6
+      env: SYMFONY_VERSION=2.8.*
+    - php: 5.6
+      env: SYMFONY_VERSION=3.0.*
+  allow_failures:
+    - php: hhvm
 
-script: vendor/bin/phpcs --standard=PSR2 src && vendor/bin/phpunit --coverage-text
+sudo: false
+
+before_install:
+  - composer selfupdate
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
+
+install: composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
+
+#before_script:
+#  - composer install -n --dev --prefer-source
+
+script:
+  - phpunit --coverage-text
+
+notifications:
+  email: info@lpweb.it

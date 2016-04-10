@@ -1,0 +1,30 @@
+imports:
+    - { resource: "@LpWebPaymentBundle/Resources/config/config.yml" }
+
+framework:
+    secret:          secret
+    test: ~
+    router:
+        resource: "%kernel.root_dir%/routing.yml"
+        strict_requirements: ~
+    form:            true
+    csrf_protection: true
+    validation:      { enable_annotations: true }
+    templating:      { engines: ['twig'] }
+    session:
+        storage_id: session.storage.mock_file
+
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: error
+            handler:      nested
+        nested:
+            type:  stream
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+
+lp_web_payment:
+    paypal:
+        business_mail: "lorenz-seller@gmail.com"

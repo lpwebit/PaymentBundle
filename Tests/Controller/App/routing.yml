@@ -1,0 +1,4 @@
+lp_web_payment:
+    resource: "@LpWebPaymentBundle/Controller/"
+    type:     annotation
+    prefix:   /
