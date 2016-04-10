@@ -2,8 +2,8 @@
  * Created by lpezzali on 29/12/15.
  */
 
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
-        $('#form_paypal_wps').submit();
-    }, 1000);
-});
+        document.getElementById('form_paypal_wps').submit();
+    }, 2000);
+}, false);
