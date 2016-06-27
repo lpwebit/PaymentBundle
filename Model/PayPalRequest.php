@@ -32,7 +32,7 @@ class PayPalRequest {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="string")
 	 */
 	private $uniqueId;
 	/**
