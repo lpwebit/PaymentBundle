@@ -26,7 +26,7 @@ class PayPalIpnLog {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="string", length=255)
 	 */
 	private $uniqueId;
 	/**
