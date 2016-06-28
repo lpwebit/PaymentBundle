@@ -177,16 +177,16 @@ abstract class PaymentInterface extends ContainerAware {
 		$this->setUniqueId(md5(uniqid(time())));
 	}
 
-	private function getAbsoluteUrl($routeName, $paymentMethod, $params = []) {
+	public function getAbsoluteUrl($routeName, $paymentMethod, $params = []) {
 		$params += ['paymentMethod' => $paymentMethod];
 		return $this->container->get('router')->generate($routeName, $params, UrlGeneratorInterface::ABSOLUTE_URL);
 	}
 
-	protected function getLogFilePath() {
+	public function getLogFilePath() {
 		return $this->container->get('kernel')->getLogDir() . '/PayPal_' . $this->mode . '.log';
 	}
 
-	protected function validateData() {
+	public function validateData() {
 		if(!$this->invoiceNumber) {
 			throw new \Exception("invoiceNumber not configured");
 		}
@@ -194,11 +194,11 @@ abstract class PaymentInterface extends ContainerAware {
 			throw new \Exception("Payment description not configured");
 		}
 		if(!$this->amount) {
-			throw new \Exception("Payment Amout not configured");
+			throw new \Exception("Payment Amount not configured");
 		}
 	}
 
-	protected function getServerUrl() {
+	public function getServerUrl() {
 		switch ($this->mode) {
 			case 'sandbox':
 				return 'https://www.sandbox.paypal.com/cgi-bin/webscr';

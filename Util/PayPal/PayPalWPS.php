@@ -30,96 +30,25 @@ class PayPalWPS extends PaymentInterface {
 		$this->businessMail = $parameters['paypal']['business_mail'];
 	}
 
-
-	public function getData($customData = []) {
-		$this->validateData();
-
-		// Specify the checkout experience to present to the user.
-		$data['cmd'] = '_cart';
-
-		// Signify we're passing in a shopping cart from our system.
-		$data['upload'] = '1';
-
-		// The store's PayPal e-mail address
-		$data['business'] = $this->businessMail;
-
-		// The application generating the API request
-		$data['bn'] = 'LpWebPayment_Bundle_WPS';
-
-		// Set the correct character set
-		$data['charset'] = 'utf-8';
-
-		// Do not display a comments prompt at PayPal
-		$data['no_note'] = '1';
-
-		// Do not display a shipping address prompt at PayPal
-		$data['no_shipping'] = '1';
-
-		// Return to the review page when payment is canceled
-		$data['cancel_return'] = $this->getCancelUrl(self::paymentMethod);
-
-		// Return to the payment redirect page for processing successful payments
-		$data['return'] = $this->getSuccessUrl(self::paymentMethod);
-
-		// The path PayPal should send the IPN to
-		$data['notify_url'] = $this->getNotifyUrl(self::paymentMethod);
-
-//		$data['notify_url'] = 'http://dev.learn.serilab.eu/commerce_paypal/ipn/paypal_wps%7Ccommerce_payment_paypal_wps';
-//		$data['cancel_return'] = 'http://dev.learn.serilab.eu/checkout/17/payment/back/4gomqgCFUYucH3kSWw0HdxDQ0nWZTCloFSx63xwSBGM';
-//		$data['return'] = 'http://dev.learn.serilab.eu/checkout/17/payment/return/4gomqgCFUYucH3kSWw0HdxDQ0nWZTCloFSx63xwSBGM';
-
-		// Return to this site with payment data in the POST
-		$data['rm'] = '2';
-
-		// The type of payment action PayPal should take with this order
-		$data['paymentaction'] = self::ACTION;
-
-		// Set the currency and language codes
-		$data['currency_code'] = $this->getCurrency();
-		$data['lc'] = 'IT';
-
-		// Use the timestamp to generate a unique invoice number
-		$data['invoice'] = $this->getInvoiceNumber();
-
-		// Define a single item in the cart representing the whole order
-		$data['amount_1'] = $this->getAmount()->getTotal();
-		$data['item_name_1'] = $this->getDescription();
-//		$data['on0_1'] = 'Product count';
-//		$data['os0_1'] = '2';
-
-		$paypalRequest = new PayPalRequest();
-		$paypalRequest->setUniqueId($this->getUniqueId());
-		$paypalRequest->setCmd($data['cmd']);
-		$paypalRequest->setUpload($data['upload']);
-		$paypalRequest->setBusiness($data['business']);
-		$paypalRequest->setBn($data['bn']);
-		$paypalRequest->setCharset($data['charset']);
-		$paypalRequest->setNoNote($data['no_note']);
-		$paypalRequest->setNoShipping($data['no_shipping']);
-		$paypalRequest->setCancelReturn($data['cancel_return']);
-		$paypalRequest->setReturn($data['return']);
-		$paypalRequest->setNotifyUrl($data['notify_url']);
-		$paypalRequest->setRm($data['rm']);
-		$paypalRequest->setPaymentaction($data['paymentaction']);
-		$paypalRequest->setCurrencyCode($data['currency_code']);
-		$paypalRequest->setLc($data['lc']);
-		$paypalRequest->setInvoice($data['invoice']);
-		$paypalRequest->setAmount1($data['amount_1']);
-		$paypalRequest->setItemName1($data['item_name_1']);
-		$paypalRequest->setCustomData(serialize($customData));
-
-		$em = $this->container->get('doctrine')->getManager();
-		$em->persist($paypalRequest);
-		$em->flush();
-
-		return [
-			'uniqueId' => $this->getUniqueId(),
-			'serverUrl' => $this->getServerUrl(),
-			'data' => $data
-		];
+	/**
+	 * @return mixed
+	 */
+	public function getBusinessMail()
+	{
+		return $this->businessMail;
 	}
 
+	/**
+	 * @param mixed $businessMail
+	 */
+	public function setBusinessMail($businessMail)
+	{
+		$this->businessMail = $businessMail;
+	}
+
+
 	public function notify(Request $request, $uniqueId) {
+
 		$ipnLog = new PayPalIpnLog();
 
 		$ipnLog->setUniqueId($uniqueId);
