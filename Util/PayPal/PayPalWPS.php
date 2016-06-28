@@ -9,8 +9,8 @@
 namespace LpWeb\PaymentBundle\Util\PayPal;
 
 
-use LpWeb\PaymentBundle\Model\PayPalIpnLog;
-use LpWeb\PaymentBundle\Model\PayPalRequest;
+use LpWeb\PaymentBundle\Entity\PayPalIpnLog;
+use LpWeb\PaymentBundle\Entity\PayPalRequest;
 use LpWeb\PaymentBundle\Event\PayPalNotifyEvent;
 use LpWeb\PaymentBundle\LpWebPaymentEvents;
 use Symfony\Component\DependencyInjection\Container;
