@@ -149,7 +149,7 @@ $data['cmd'] = '_cart';
 $data['upload'] = '1';
 
 // The store's PayPal e-mail address
-$data['business'] = $this->businessMail;
+$data['business'] = $wpsService->getBusinessMail();
 
 // The application generating the API request
 $data['bn'] = 'LpWebPayment_Bundle_WPS';
@@ -163,14 +163,14 @@ $data['no_note'] = '1';
 // Do not display a shipping address prompt at PayPal
 $data['no_shipping'] = '1';
 
-// Return to the review page when payment is canceled
-$data['cancel_return'] = $wpsService->getCancelUrl(self::paymentMethod);
+ // Return to the review page when payment is canceled
+$data['cancel_return'] = $wpsService->getCancelUrl($wpsService::paymentMethod);
 
 // Return to the payment redirect page for processing successful payments
-$data['return_url'] = $wpsService->getSuccessUrl(self::paymentMethod);
+$data['return'] = $wpsService->getSuccessUrl($wpsService::paymentMethod);
 
 // The path PayPal should send the IPN to
-$data['notify_url'] = $wpsService->getNotifyUrl(self::paymentMethod);
+$data['notify_url'] = $wpsService->getNotifyUrl($wpsService::paymentMethod);
 
 $data['rm'] = '2';
 
