@@ -6,7 +6,7 @@
  * Time: 16:19
  */
 
-namespace LpWeb\PaymentBundle\Model;
+namespace LpWeb\PaymentBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -88,7 +88,7 @@ class PayPalRequest {
 	 *
 	 * @ORM\Column(type="text")
 	 */
-	private $return;
+	private $return_url;
 	/**
 	 * @var string
 	 *
@@ -309,7 +309,7 @@ class PayPalRequest {
 	/**
 	 * @return string
 	 */
-	public function getReturn() {
+	public function getReturnUrl() {
 		return $this->return;
 	}
 
@@ -317,8 +317,8 @@ class PayPalRequest {
 	 * @param string $return
 	 * @return PayPalRequest
 	 */
-	public function setReturn($return) {
-		$this->return = $return;
+	public function setReturnUrl($return) {
+		$this->return_url = $return;
 		return $this;
 	}
 
