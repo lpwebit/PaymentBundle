@@ -209,6 +209,8 @@ abstract class PaymentInterface extends ContainerAware {
 		}
 	}
 
+	public abstract function configure(array $data);
+
 	public abstract function notify(Request $request, $uniqueId);
 
 	public abstract function success(Request $request, $uniqueId);

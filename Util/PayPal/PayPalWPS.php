@@ -9,8 +9,10 @@
 namespace LpWeb\PaymentBundle\Util\PayPal;
 
 
+use Doctrine\ORM\EntityManager;
 use LpWeb\PaymentBundle\Entity\PayPalIpnLog;
 use LpWeb\PaymentBundle\Entity\PayPalRequest;
+use LpWeb\PaymentBundle\Entity\PaymentRequestItem;
 use LpWeb\PaymentBundle\Event\PayPalNotifyEvent;
 use LpWeb\PaymentBundle\LpWebPaymentEvents;
 use Symfony\Component\DependencyInjection\Container;
@@ -22,6 +24,8 @@ class PayPalWPS extends PaymentInterface {
 
 	// Configuration field
 	private $businessMail;
+	private $items = [];
+	private $data = [];
 
 	function __construct(Container $container) {
 		$parameters = $container->getParameter('lp_web_payment');
@@ -33,22 +37,138 @@ class PayPalWPS extends PaymentInterface {
 	/**
 	 * @return mixed
 	 */
-	public function getBusinessMail()
-	{
+	public function getBusinessMail() {
 		return $this->businessMail;
 	}
 
 	/**
 	 * @param mixed $businessMail
 	 */
-	public function setBusinessMail($businessMail)
-	{
+	public function setBusinessMail($businessMail) {
 		$this->businessMail = $businessMail;
 	}
 
+	public function getDefaultData() {
+		// Specify the checkout experience to present to the user.
+		$defaultData['cmd'] = '_cart';
+
+		// Signify we're passing in a shopping cart from our system.
+		$defaultData['upload'] = '1';
+
+		// The store's PayPal e-mail address
+		$defaultData['business'] = $this->getBusinessMail();
+
+		// The application generating the API request
+		$defaultData['bn'] = 'LpWebPayment_Bundle_WPS';
+
+		// Set the correct character set
+		$defaultData['charset'] = 'utf-8';
+
+		// Do not display a comments prompt at PayPal
+		$defaultData['no_note'] = '1';
+
+		// Do not display a shipping address prompt at PayPal
+		$defaultData['no_shipping'] = '1';
+
+		// Return to the review page when payment is canceled
+		$defaultData['cancel_return'] = $this->getCancelUrl($this::paymentMethod);
+
+		// Return to the payment redirect page for processing successful payments
+		$defaultData['return'] = $this->getSuccessUrl($this::paymentMethod);
+
+		// The path PayPal should send the IPN to
+		$defaultData['notify_url'] = $this->getNotifyUrl($this::paymentMethod);
+
+		$defaultData['rm'] = '2';
+
+		// The type of payment action PayPal should take with this order
+		$defaultData['paymentaction'] = $this::ACTION;
+
+		// Set the currency and language codes
+		$defaultData['currency_code'] = 'AUD';
+		$defaultData['lc'] = 'EN';
+
+		// Use the timestamp to generate a unique invoice number
+		$defaultData['invoice'] = $this->getInvoiceNumber();
+
+		return $defaultData;
+	}
+
+	public function configure(array $data) {
+		// invoice number, amount and description is compulsory
+		$this->validateData();
+
+		$defaultData = $this->getDefaultData();
+
+		$this->data = array_merge($defaultData, $this->data, $data);
+	}
+
+	public function addItem($description, $amount) {
+		$this->items[] = [
+			'description' => $description,
+			'amount' => $amount
+		];
+	}
+
+	public function process() {
+		if (count($this->items) <= 0) {
+			throw new \Exception("You can't proceed without item in cart, consider adding at least one");
+		}
+
+		$this->configure(['return_url' => $this->getRedirectUrl()]);
+
+		$paypalRequest = new PayPalRequest();
+		$paypalRequest->setUniqueId($this->getUniqueId());
+		$paypalRequest->setCmd($this->data['cmd']);
+		$paypalRequest->setUpload($this->data['upload']);
+		$paypalRequest->setBusiness($this->data['business']);
+		$paypalRequest->setBn($this->data['bn']);
+		$paypalRequest->setCharset($this->data['charset']);
+		$paypalRequest->setNoNote($this->data['no_note']);
+		$paypalRequest->setNoShipping($this->data['no_shipping']);
+		$paypalRequest->setCancelReturn($this->data['cancel_return']);
+		$paypalRequest->setReturnUrl($this->data['return_url']);
+		$paypalRequest->setNotifyUrl($this->data['notify_url']);
+		$paypalRequest->setRm($this->data['rm']);
+		$paypalRequest->setPaymentaction($this->data['paymentaction']);
+		$paypalRequest->setCurrencyCode($this->data['currency_code']);
+		$paypalRequest->setLc($this->data['lc']);
+		$paypalRequest->setInvoice($this->data['invoice']);
+
+		$total = 0;
+		$i = 1;
+		$paypalRequestItems = [];
+		foreach ($this->items as $item) {
+			$this->data['item_name_' . $i] = $item['description'];
+			$this->data['amount_' . $i] = (double)$item['amount'];
+			$total += $this->data['amount_' . $i];
+			$paypalRequestItem = new PaymentRequestItem();
+			$paypalRequestItem->setAmount($item['amount']);
+			$paypalRequestItem->setDescription($item['description']);
+			$paypalRequestItem->setRequest($paypalRequest);
+			$paypalRequestItems[] = $paypalRequestItem;
+			$i++;
+		}
+
+		if($total > $this->getAmount()->getTotal()) {
+			throw new \Exception("The total amount of the items is more than the order total");
+		}
+
+
+
+		/** @var EntityManager $em */
+		$em = $this->container->get('doctrine')->getManager();
+		$em->transactional(function (EntityManager $em) use ($paypalRequest, $paypalRequestItems) {
+			$em->persist($paypalRequest);
+			foreach ($paypalRequestItems as $paypalRequestItem) {
+				$em->persist($paypalRequestItem);
+			}
+		});
+
+		return $this->container->get('templating')->renderResponse('LpWebPaymentBundle:Payment:process.html.twig', ['data' => ['serverUrl' => $this->getServerUrl(), 'data' => $this->data]]);
+	}
 
 	public function notify(Request $request, $uniqueId) {
-
 		$ipnLog = new PayPalIpnLog();
 
 		$ipnLog->setUniqueId($uniqueId);
@@ -92,9 +212,15 @@ class PayPalWPS extends PaymentInterface {
 		$ipnLog->setPaymentGross($request->get('payment_gross'));
 		$ipnLog->setAuth($request->get('auth'));
 
-		$em = $this->container->get('doctrine')->getManager();
-		$em->persist($ipnLog);
-		$em->flush();
+		try {
+			/** @var EntityManager $em */
+			$em = $this->container->get('doctrine')->getManager();
+			$em->transactional(function (EntityManager $em) use ($ipnLog) {
+				$em->persist($ipnLog);
+			});
+		} catch (\Exception $ex) {
+			$this->container->get('logger')->error($ex);
+		}
 
 		/** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
 		$dispatcher = $this->container->get('event_dispatcher');

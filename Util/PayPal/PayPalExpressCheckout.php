@@ -161,4 +161,8 @@ class PayPalExpressCheckout extends PaymentInterface {
 	public function cancel($uniqueId) {
 		// TODO: Implement cancel() method.
 	}
+
+	public function configure(array $data) {
+		// TODO: Implement configure() method.
+	}
 }

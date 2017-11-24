@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks
  */
-class PayPalRequest {
+class PaymentRequest {
 
 	/**
 	 * @var integer
@@ -28,13 +28,18 @@ class PayPalRequest {
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	private $id;
-
+	/**
+	 * @var integer
+	 *
+	 * @ORM\Column(type="decimal")
+	 */
+	private $uniqueId;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="string", length=255)
+	 * @ORM\Column(type="string", length=30)
 	 */
-	private $uniqueId;
+	private $paymentMethod;
 	/**
 	 * @var string
 	 *
@@ -128,18 +133,6 @@ class PayPalRequest {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(type="text")
-	 */
-	private $amount_1;
-	/**
-	 * @var string
-	 *
-	 * @ORM\Column(type="text")
-	 */
-	private $item_name_1;
-	/**
-	 * @var string
-	 *
 	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $customData;
@@ -150,9 +143,30 @@ class PayPalRequest {
 	 * @ORM\Column(name="added", type="datetimetz")
 	 */
 	private $added;
+	/**
+	 * @ORM\OneToMany(targetEntity="LpWeb\PaymentBundle\Entity\PaymentRequestItem", mappedBy="request")
+	 */
+	private $requestItems;
+
 
 	function __construct() {
 		$this->added = new \DateTime();
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getRm() {
+		return $this->rm;
+	}
+
+	/**
+	 * @param string $rm
+	 * @return PaymentRequest
+	 */
+	public function setRm($rm) {
+		$this->rm = $rm;
+		return $this;
 	}
 
 	/**
@@ -163,18 +177,43 @@ class PayPalRequest {
 	}
 
 	/**
-	 * @return string
+	 * @param int $id
+	 * @return PaymentRequest
+	 */
+	public function setId($id) {
+		$this->id = $id;
+		return $this;
+	}
+
+	/**
+	 * @return int
 	 */
 	public function getUniqueId() {
 		return $this->uniqueId;
 	}
 
 	/**
-	 * @param string $uniqueId
-	 * @return PayPalRequest
+	 * @param int $uniqueId
+	 * @return PaymentRequest
 	 */
 	public function setUniqueId($uniqueId) {
 		$this->uniqueId = $uniqueId;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPaymentMethod() {
+		return $this->paymentMethod;
+	}
+
+	/**
+	 * @param string $paymentMethod
+	 * @return PaymentRequest
+	 */
+	public function setPaymentMethod($paymentMethod) {
+		$this->paymentMethod = $paymentMethod;
 		return $this;
 	}
 
@@ -187,7 +226,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $cmd
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setCmd($cmd) {
 		$this->cmd = $cmd;
@@ -203,7 +242,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $upload
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setUpload($upload) {
 		$this->upload = $upload;
@@ -219,7 +258,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $business
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setBusiness($business) {
 		$this->business = $business;
@@ -235,7 +274,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $bn
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setBn($bn) {
 		$this->bn = $bn;
@@ -251,7 +290,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $charset
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setCharset($charset) {
 		$this->charset = $charset;
@@ -267,7 +306,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $no_note
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setNoNote($no_note) {
 		$this->no_note = $no_note;
@@ -283,7 +322,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $no_shipping
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setNoShipping($no_shipping) {
 		$this->no_shipping = $no_shipping;
@@ -299,7 +338,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $cancel_return
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setCancelReturn($cancel_return) {
 		$this->cancel_return = $cancel_return;
@@ -310,15 +349,15 @@ class PayPalRequest {
 	 * @return string
 	 */
 	public function getReturnUrl() {
-		return $this->return;
+		return $this->return_url;
 	}
 
 	/**
-	 * @param string $return
-	 * @return PayPalRequest
+	 * @param string $return_url
+	 * @return PaymentRequest
 	 */
-	public function setReturnUrl($return) {
-		$this->return_url = $return;
+	public function setReturnUrl($return_url) {
+		$this->return_url = $return_url;
 		return $this;
 	}
 
@@ -331,26 +370,10 @@ class PayPalRequest {
 
 	/**
 	 * @param string $notify_url
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setNotifyUrl($notify_url) {
 		$this->notify_url = $notify_url;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getRm() {
-		return $this->rm;
-	}
-
-	/**
-	 * @param string $rm
-	 * @return PayPalRequest
-	 */
-	public function setRm($rm) {
-		$this->rm = $rm;
 		return $this;
 	}
 
@@ -363,7 +386,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $paymentaction
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setPaymentaction($paymentaction) {
 		$this->paymentaction = $paymentaction;
@@ -379,7 +402,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $currency_code
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setCurrencyCode($currency_code) {
 		$this->currency_code = $currency_code;
@@ -395,7 +418,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $lc
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setLc($lc) {
 		$this->lc = $lc;
@@ -411,42 +434,10 @@ class PayPalRequest {
 
 	/**
 	 * @param string $invoice
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setInvoice($invoice) {
 		$this->invoice = $invoice;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getAmount1() {
-		return $this->amount_1;
-	}
-
-	/**
-	 * @param string $amount_1
-	 * @return PayPalRequest
-	 */
-	public function setAmount1($amount_1) {
-		$this->amount_1 = $amount_1;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getItemName1() {
-		return $this->item_name_1;
-	}
-
-	/**
-	 * @param string $item_name_1
-	 * @return PayPalRequest
-	 */
-	public function setItemName1($item_name_1) {
-		$this->item_name_1 = $item_name_1;
 		return $this;
 	}
 
@@ -459,7 +450,7 @@ class PayPalRequest {
 
 	/**
 	 * @param string $customData
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setCustomData($customData) {
 		$this->customData = $customData;
@@ -475,10 +466,26 @@ class PayPalRequest {
 
 	/**
 	 * @param \DateTime $added
-	 * @return PayPalRequest
+	 * @return PaymentRequest
 	 */
 	public function setAdded($added) {
 		$this->added = $added;
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getRequestItems() {
+		return $this->requestItems;
+	}
+
+	/**
+	 * @param mixed $requestItems
+	 * @return PaymentRequest
+	 */
+	public function setRequestItems($requestItems) {
+		$this->requestItems = $requestItems;
 		return $this;
 	}
 
